@@ -67,6 +67,14 @@ if [ $# -eq 0 ]; then             # no argument provided
 		if [ $TMUX_STATUS -eq 0 ]; then # tmux is running
 			RESULT=$(
 				(get_sessions_by_mru && (zoxide query -l | sed -e "$HOME_REPLACER")) | fzf \
+                    --color=bg+:#363a4f,bg:#24273a,spinner:#f4dbd6,hl:#ed8796 \
+                    --color=fg:#cad3f5,header:#ed8796,info:#c6a0f6,pointer:#f4dbd6 \
+                    --color=marker:#f4dbd6,fg+:#cad3f5,prompt:#c6a0f6,hl+:#ed8796 \
+                    --border sharp \
+                    --layout reverse \
+                    --prompt '∷ ' \
+                    --pointer ▶ \
+                    --marker ⇒\
 					--bind "$DIR_BIND" \
 					--bind "$SESSION_BIND" \
 					--bind "$ZOXIDE_BIND" \
@@ -78,6 +86,14 @@ if [ $# -eq 0 ]; then             # no argument provided
 		else # tmux is not running
 			RESULT=$(
 				(zoxide query -l | sed -e "$HOME_REPLACER") | fzf \
+                    --color=bg+:#363a4f,bg:#24273a,spinner:#f4dbd6,hl:#ed8796 \
+                    --color=fg:#cad3f5,header:#ed8796,info:#c6a0f6,pointer:#f4dbd6 \
+                    --color=marker:#f4dbd6,fg+:#cad3f5,prompt:#c6a0f6,hl+:#ed8796 \
+                    --border sharp \
+                    --layout reverse \
+                    --prompt '∷ ' \
+                    --pointer ▶ \
+                    --marker ⇒\
 					--bind "$DIR_BIND" \
 					--border-label "$BORDER_LABEL" \
 					--header " ctrl-d: directory" \
@@ -88,6 +104,14 @@ if [ $# -eq 0 ]; then             # no argument provided
 	else # in tmux
 		RESULT=$(
 			(get_sessions_by_mru && (zoxide query -l | sed -e "$HOME_REPLACER")) | fzf-tmux \
+                --color=bg+:#363a4f,bg:#24273a,spinner:#f4dbd6,hl:#ed8796 \
+                --color=fg:#cad3f5,header:#ed8796,info:#c6a0f6,pointer:#f4dbd6 \
+                --color=marker:#f4dbd6,fg+:#cad3f5,prompt:#c6a0f6,hl+:#ed8796 \
+                --border sharp \
+                --layout reverse \
+                --prompt '∷ ' \
+                --pointer ▶ \
+                --marker ⇒\
 				--bind "$DIR_BIND" \
 				--bind "$SESSION_BIND" \
 				--bind "$ZOXIDE_BIND" \
