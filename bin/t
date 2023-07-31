@@ -159,14 +159,22 @@ fi
 
 if [ "$TMUX" = "" ]; then                          # not currently in tmux
 	if [ "$SESSION" = "" ]; then                      # session does not exist
-		tmux new-session -s "$SESSION_NAME" -c "$RESULT" # create session and attach
+        if [ -f "$RESULT/.tmuxp.yaml" ]; then         # tmuxp session file exists
+            tmuxp load -y "$RESULT/.tmuxp.yaml"          # load tmuxp session
+        else
+            tmux new-session -s "$SESSION_NAME" -c "$RESULT" # create session and attach
+        fi
 	else                                              # session exists
 		tmux attach -t "$SESSION"                        # attach to session
 	fi
 else                                                  # currently in tmux
 	if [ "$SESSION" = "" ]; then                         # session does not exist
-		tmux new-session -d -s "$SESSION_NAME" -c "$RESULT" # create session
-		tmux switch-client -t "$SESSION_NAME"               # attach to session
+        if [ -f "$RESULT/.tmuxp.yaml" ]; then         # tmuxp session file exists
+            tmuxp load -y "$RESULT/.tmuxp.yaml"          # load tmuxp session
+        else
+            tmux new-session -d -s "$SESSION_NAME" -c "$RESULT" # create session
+            tmux switch-client -t "$SESSION_NAME"               # attach to session
+        fi
 	else                                                 # session exists
 		tmux switch-client -t "$SESSION"                    # switch to session
 	fi
