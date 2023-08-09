@@ -30,15 +30,6 @@ fi
 tmux ls &>/dev/null
 TMUX_STATUS=$?
 
-get_fzf_prompt() {
-	local fzf_prompt
-	local fzf_default_prompt='>  '
-	if [ $TMUX_STATUS -eq 0 ]; then # tmux is running
-		fzf_prompt="$(tmux show -gqv '@t-fzf-prompt')"
-	fi
-	[ -n "$fzf_prompt" ] && echo "$fzf_prompt" || echo "$fzf_default_prompt"
-}
-
 HOME_REPLACER=""                                          # default to a noop
 echo "$HOME" | grep -E "^[a-zA-Z0-9\-_/.@]+$" &>/dev/null # chars safe to use in sed
 HOME_SED_SAFE=$?
@@ -48,7 +39,6 @@ fi
 
 BORDER_LABEL=" t - smart tmux session manager "
 HEADER=" ctrl-s: sessions / ctrl-x: zoxide / ctrl-d: directory"
-PROMPT=$(get_fzf_prompt)
 SESSION_BIND="ctrl-s:change-prompt(sessions> )+reload(tmux list-sessions -F '#S')"
 ZOXIDE_BIND="ctrl-x:change-prompt(zoxide> )+reload(zoxide query -l | sed -e \"$HOME_REPLACER\")"
 
@@ -67,58 +57,52 @@ if [ $# -eq 0 ]; then             # no argument provided
 		if [ $TMUX_STATUS -eq 0 ]; then # tmux is running
 			RESULT=$(
 				(get_sessions_by_mru && (zoxide query -l | sed -e "$HOME_REPLACER")) | fzf \
-                    --color=bg+:#363a4f,bg:#24273a,spinner:#f4dbd6,hl:#ed8796 \
-                    --color=fg:#cad3f5,header:#ed8796,info:#c6a0f6,pointer:#f4dbd6 \
-                    --color=marker:#f4dbd6,fg+:#cad3f5,prompt:#c6a0f6,hl+:#ed8796 \
+                    --color=bg+:#313244,bg:#1e1e2e,spinner:#f5e0dc,hl:#f38ba8 \
+                    --color=fg:#cdd6f4,header:#f38ba8,info:#cba6f7,pointer:#f5e0dc \
+                    --color=marker:#f5e0dc,fg+:#cdd6f4,prompt:#cba6f7,hl+:#f38ba8 \
                     --border sharp \
                     --layout reverse \
                     --prompt '∷ ' \
                     --pointer ▶ \
-                    --marker ⇒\
 					--bind "$DIR_BIND" \
 					--bind "$SESSION_BIND" \
 					--bind "$ZOXIDE_BIND" \
 					--border-label "$BORDER_LABEL" \
 					--header "$HEADER" \
 					--no-sort \
-					--prompt "$PROMPT"
 			)
 		else # tmux is not running
 			RESULT=$(
 				(zoxide query -l | sed -e "$HOME_REPLACER") | fzf \
-                    --color=bg+:#363a4f,bg:#24273a,spinner:#f4dbd6,hl:#ed8796 \
-                    --color=fg:#cad3f5,header:#ed8796,info:#c6a0f6,pointer:#f4dbd6 \
-                    --color=marker:#f4dbd6,fg+:#cad3f5,prompt:#c6a0f6,hl+:#ed8796 \
+                    --color=bg+:#313244,bg:#1e1e2e,spinner:#f5e0dc,hl:#f38ba8 \
+                    --color=fg:#cdd6f4,header:#f38ba8,info:#cba6f7,pointer:#f5e0dc \
+                    --color=marker:#f5e0dc,fg+:#cdd6f4,prompt:#cba6f7,hl+:#f38ba8 \
                     --border sharp \
                     --layout reverse \
                     --prompt '∷ ' \
                     --pointer ▶ \
-                    --marker ⇒\
 					--bind "$DIR_BIND" \
 					--border-label "$BORDER_LABEL" \
 					--header " ctrl-d: directory" \
 					--no-sort \
-					--prompt "$PROMPT"
 			)
 		fi
 	else # in tmux
 		RESULT=$(
 			(get_sessions_by_mru && (zoxide query -l | sed -e "$HOME_REPLACER")) | fzf-tmux \
-                --color=bg+:#363a4f,bg:#24273a,spinner:#f4dbd6,hl:#ed8796 \
-                --color=fg:#cad3f5,header:#ed8796,info:#c6a0f6,pointer:#f4dbd6 \
-                --color=marker:#f4dbd6,fg+:#cad3f5,prompt:#c6a0f6,hl+:#ed8796 \
+                --color=bg+:#313244,bg:#1e1e2e,spinner:#f5e0dc,hl:#f38ba8 \
+                --color=fg:#cdd6f4,header:#f38ba8,info:#cba6f7,pointer:#f5e0dc \
+                --color=marker:#f5e0dc,fg+:#cdd6f4,prompt:#cba6f7,hl+:#f38ba8 \
                 --border sharp \
                 --layout reverse \
                 --prompt '∷ ' \
                 --pointer ▶ \
-                --marker ⇒\
 				--bind "$DIR_BIND" \
 				--bind "$SESSION_BIND" \
 				--bind "$ZOXIDE_BIND" \
 				--border-label "$BORDER_LABEL" \
 				--header "$HEADER" \
 				--no-sort \
-				--prompt "$PROMPT" \
 				-p 60%,50%
 		)
 	fi
