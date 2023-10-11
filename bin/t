@@ -48,8 +48,13 @@ else # fd is not installed
 	DIR_BIND="ctrl-d:change-prompt(directory> )+reload(cd $HOME && find ~+ -type d -name node_modules -prune -o -name .git -prune -o -type d -print)"
 fi
 
+FILTER_REGEX="^__"
+
 get_sessions_by_mru() {
-	tmux list-sessions -F '#{session_last_attached} #{session_name}' | sort --numeric-sort --reverse | awk '{print $2}'
+	tmux list-sessions -F '#{session_last_attached} #{session_name}' \
+        | sort --numeric-sort --reverse  \
+        | awk '{print $2}' \
+        | grep -v $FILTER_REGEX
 }
 
 if [ $# -eq 0 ]; then             # no argument provided
@@ -63,7 +68,7 @@ if [ $# -eq 0 ]; then             # no argument provided
                     --border sharp \
                     --layout reverse \
                     --prompt '∷ ' \
-                    --pointer ▶ \
+                    --pointer '▶' \
 					--bind "$DIR_BIND" \
 					--bind "$SESSION_BIND" \
 					--bind "$ZOXIDE_BIND" \
@@ -80,7 +85,7 @@ if [ $# -eq 0 ]; then             # no argument provided
                     --border sharp \
                     --layout reverse \
                     --prompt '∷ ' \
-                    --pointer ▶ \
+                    --pointer '▶' \
 					--bind "$DIR_BIND" \
 					--border-label "$BORDER_LABEL" \
 					--header " ctrl-d: directory" \
@@ -96,7 +101,7 @@ if [ $# -eq 0 ]; then             # no argument provided
                 --border sharp \
                 --layout reverse \
                 --prompt '∷ ' \
-                --pointer ▶ \
+                --pointer '▶' \
 				--bind "$DIR_BIND" \
 				--bind "$SESSION_BIND" \
 				--bind "$ZOXIDE_BIND" \
